@@ -1,0 +1,167 @@
+# depslib dependency file v1.0
+1649688067 source:d:\codeblocks\project\game_draft\main.cpp
+	<iostream>
+	<string>
+	<SDL.h>
+	<SDL_image.h>
+	<SDL_mixer.h>
+	<stdio.h>
+	"Game.h"
+	"TextureManager.h"
+
+1649416541 d:\codeblocks\project\game_draft\struct.h
+	<iostream>
+	<string>
+	<SDL.h>
+	<SDL_image.h>
+	"Init.h"
+
+1649321871 d:\codeblocks\project\game_draft\init.h
+	<iostream>
+	<SDL.h>
+	<SDL_image.h>
+	<string>
+	"Struct.h"
+
+1649416541 source:d:\codeblocks\project\game_draft\struct.cpp
+	"Struct.h"
+
+1650723563 d:\codeblocks\project\game_draft\game.h
+	<SDL.h>
+	<SDL_image.h>
+	<iostream>
+
+1650213259 source:d:\codeblocks\project\game_draft\game.cpp
+	"Game.h"
+	"TextureManager.h"
+	"GameObject.h"
+	"Map.h"
+
+1649693436 d:\codeblocks\project\game_draft\texturemanager.h
+	"Game.h"
+
+1649693436 source:d:\codeblocks\project\game_draft\texturemanager.cpp
+	"TextureManager.h"
+
+1650723562 source:d:\codeblocks\project\game_draft\gameobject.cpp
+	"Game.h"
+	"GameObject.h"
+	"TextureManager.h"
+	"Collision.h"
+
+1650723562 d:\codeblocks\project\game_draft\gameobject.h
+	"Game.h"
+
+1649898560 d:\codeblocks\project\game_draft\map.h
+	"Game.h"
+
+1650722796 source:d:\codeblocks\project\game_draft\map.cpp
+	"Map.h"
+	"TextureManager.h"
+
+1650723560 d:\codeblocks\project\game_draft\collision.h
+
+1650808096 source:d:\codeblocks\project\game_draft - copy\game.cpp
+	"Game.h"
+	"TextureManager.h"
+	"GameObject.h"
+	"Map.h"
+
+1650784455 d:\codeblocks\project\game_draft - copy\game.h
+	<SDL.h>
+	<SDL_image.h>
+	<iostream>
+
+1649693436 d:\codeblocks\project\game_draft - copy\texturemanager.h
+	"Game.h"
+
+1651133534 d:\codeblocks\project\game_draft - copy\gameobject.h
+	"Game.h"
+
+1650791435 d:\codeblocks\project\game_draft - copy\map.h
+	"Game.h"
+	"GameObject.h"
+
+1650885300 source:d:\codeblocks\project\game_draft - copy\gameobject.cpp
+	"Game.h"
+	"GameObject.h"
+	"TextureManager.h"
+	"Collision.h"
+	"Map"
+
+1650784868 d:\codeblocks\project\game_draft - copy\collision.h
+
+1650811954 source:d:\codeblocks\project\game_draft - copy\main.cpp
+	<iostream>
+	<string>
+	<SDL.h>
+	<SDL_image.h>
+	<SDL_mixer.h>
+	<stdio.h>
+	"Game.h"
+	"TextureManager.h"
+
+1650855275 source:d:\codeblocks\project\game_draft - copy\map.cpp
+	"Map.h"
+	"TextureManager.h"
+
+1649693436 source:d:\codeblocks\project\game_draft - copy\texturemanager.cpp
+	"TextureManager.h"
+
+1650729379 source:d:\codeblocks\project\game_draft - copy\tile.cpp
+	"Tile.h"
+	"Game.h"
+	"GameObject.h"
+	"TextureManager.h"
+	"Collision.h"
+
+1650728006 d:\codeblocks\project\game_draft - copy\tile.h
+	"Game.h"
+
+1651137893 source:d:\codeblocks\project\game_draft-main\game.cpp
+	"Game.h"
+	"TextureManager.h"
+	"GameObject.h"
+	"Map.h"
+
+1651136888 d:\codeblocks\project\game_draft-main\game.h
+	<SDL.h>
+	<SDL_image.h>
+	<iostream>
+
+1651133596 d:\codeblocks\project\game_draft-main\texturemanager.h
+	"Game.h"
+
+1651480566 d:\codeblocks\project\game_draft-main\gameobject.h
+	"Game.h"
+
+1651137203 d:\codeblocks\project\game_draft-main\map.h
+	"Game.h"
+	"GameObject.h"
+
+1651137908 source:d:\codeblocks\project\game_draft-main\gameobject.cpp
+	"Game.h"
+	"GameObject.h"
+	"TextureManager.h"
+	"Collision.h"
+	"Map"
+
+1651133596 d:\codeblocks\project\game_draft-main\collision.h
+
+1651133596 source:d:\codeblocks\project\game_draft-main\main.cpp
+	<iostream>
+	<string>
+	<SDL.h>
+	<SDL_image.h>
+	<SDL_mixer.h>
+	<stdio.h>
+	"Game.h"
+	"TextureManager.h"
+
+1651137203 source:d:\codeblocks\project\game_draft-main\map.cpp
+	"Map.h"
+	"TextureManager.h"
+
+1651133596 source:d:\codeblocks\project\game_draft-main\texturemanager.cpp
+	"TextureManager.h"
+
