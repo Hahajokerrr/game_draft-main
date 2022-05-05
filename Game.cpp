@@ -47,7 +47,7 @@ void Game::init(const char* title, int xpos, int ypos, int width, int height, bo
     }
 
     background = TextureManager::LoadTexture("image/sky.png");
-    player = new GameObject("image/king_right_2.png", 0 , LEVEL_HEIGHT - 32);
+    player = new GameObject("image/king_right_2.png", 64 , LEVEL_HEIGHT - 800);
     mapper = new Map();
 }
 
@@ -71,6 +71,9 @@ void Game::handleEvents()
                 */
                 case SDLK_RIGHT: player->RunRight(); break;
                 case SDLK_LEFT: player->RunLeft(); break;
+                case SDLK_UP: player->RunUp(); break;
+                case SDLK_DOWN: player->RunDown(); break;
+
                 case SDLK_SPACE: player->Jump(); break;
             }
         }
@@ -84,9 +87,11 @@ void Game::handleEvents()
                 case SDLK_UP: player->yvel += player->yspeed; break;
                 case SDLK_DOWN: player->yvel -= player->yspeed; break;
                 */
-                case SDLK_RIGHT: player->Stop(); break;
-                case SDLK_LEFT: player->Stop(); break;
-                case SDLK_SPACE: player->Stop(); break;
+                case SDLK_RIGHT: player->StopRunRight(); break;
+                case SDLK_LEFT: player->StopRunLeft(); break;
+                case SDLK_UP: player->StopRunUp(); break;
+                case SDLK_DOWN: player->StopRunDown(); break;
+                //case SDLK_SPACE: player->StopRunUp(); break;
             }
     }
 }
