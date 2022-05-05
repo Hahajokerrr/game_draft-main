@@ -56,6 +56,9 @@ GameObject::GameObject(const char* texturesheet, int x, int y)
     xvel = 0;
     yvel = 0;
 
+    startTime = 0;
+    jumpTime = 0;
+
     status = standing;
     onGround = true;
 
@@ -87,6 +90,8 @@ bool GameObject::Collide(SDL_Rect &x, SDL_Rect Tile[][25], int Mapping[][25])
     return false;
 }
 
+
+
 void GameObject::RunLeft()
 {
     status = running;
@@ -99,34 +104,19 @@ void GameObject::RunRight()
     xvel += xspeed;
 }
 
-void GameObject::RunUp()
+void GameObject::PrepareJump()
 {
-    status = running;
-    yvel -= yspeed;
-}
-
-void GameObject::RunDown()
-{
-    status = running;
-    yvel += yspeed;
-}
-
-void GameObject::StopRunUp()
-{
-    status = standing;
-    yvel = 0;
-}
-
-void GameObject::StopRunDown()
-{
-    status = standing;
-    yvel = 0;
+    startTime = SDL_GetTicks();
 }
 
 void GameObject::Jump()
 {
-    status = running;
-    yvel -= 20;
+    jumpTime = SDL_GetTicks() - startTime;
+    yvel = -(jumpTime * 0.02);
+    if(yvel > -10) yvel = -10;
+    if(yvel < -25) yvel = -25;
+    startTime = 0;
+    jumpTime = 0;
 }
 
 void GameObject::StopRunRight()

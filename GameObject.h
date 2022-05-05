@@ -27,6 +27,7 @@ public:
     void RunRight();
     void RunUp();
     void RunDown();
+    void PrepareJump();
     void Jump();
     void StopRunRight();
     void StopRunLeft();
@@ -61,6 +62,9 @@ private:
 
     double xvel;
     double yvel;
+
+    Uint32 startTime;
+    int jumpTime;
 
     SDL_Texture* objTexture = NULL;
     SDL_Rect srcRect, destRect, collider;

@@ -71,10 +71,8 @@ void Game::handleEvents()
                 */
                 case SDLK_RIGHT: player->RunRight(); break;
                 case SDLK_LEFT: player->RunLeft(); break;
-                case SDLK_UP: player->RunUp(); break;
-                case SDLK_DOWN: player->RunDown(); break;
 
-                case SDLK_SPACE: player->Jump(); break;
+                case SDLK_SPACE: player->PrepareJump(); break;
             }
         }
     else if( event.type == SDL_KEYUP && event.key.repeat == 0 )
@@ -89,9 +87,7 @@ void Game::handleEvents()
                 */
                 case SDLK_RIGHT: player->StopRunRight(); break;
                 case SDLK_LEFT: player->StopRunLeft(); break;
-                case SDLK_UP: player->StopRunUp(); break;
-                case SDLK_DOWN: player->StopRunDown(); break;
-                //case SDLK_SPACE: player->StopRunUp(); break;
+                case SDLK_SPACE: player->Jump(); break;
             }
     }
 }
