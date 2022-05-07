@@ -2,12 +2,22 @@
 #define GAMEOBJECT_H_INCLUDED
 
 #include "Game.h"
+#include <math.h>
 
 #define gravity 0.8
 #define MAX_FALL_SPEED 20
 
-enum condition { standing, running, jumping, falling};
+using namespace std;
 
+enum condition { standing, running, charging, jumping, falling, };
+typedef struct Input
+{
+    int left;
+    int right;
+    int space;
+    int jumpleft;
+    int jumpright;
+};
 
 
 class GameObject
@@ -21,7 +31,6 @@ public:
     SDL_Rect GetCollider() { return collider; }
 
     void Update(SDL_Rect Tile[][25], int Mapping[][25]);
-    void CheckMap(SDL_Rect Tile[][25], int Mapping[][25]);
 
     void RunLeft();
     void RunRight();
@@ -36,17 +45,24 @@ public:
 
     void Render();
     void ObjectClose();
-    bool Collide(SDL_Rect &x, SDL_Rect Tile[][25], int Mapping[][25]);
+
+    void CollideVertical(SDL_Rect &col, SDL_Rect Tile[][25], int Mapping[][25]);
+    void CollideHorizontal(SDL_Rect &col, SDL_Rect Tile[][25], int Mapping[][25]);
     bool checkCollision2( SDL_Rect a, SDL_Rect b );
 
+    void CalculateAngle();
 
     int Getxspeed(){ return xspeed; }
     int Getxvel() { return xvel; }
     int Getyvel() { return yvel; }
 
 
-    static const int xspeed = 8;
-    static const int yspeed = 8;
+    static const int xspeed = 1;
+    static const int yspeed = 1;
+
+    static const int maxxspeed = 8;
+    static const int maxyspeed = 8;
+
 
     static const int KING_WIDTH = 32;
     static const int KING_HEIGHT = 32;
@@ -63,6 +79,11 @@ private:
     double xvel;
     double yvel;
 
+    double angle;
+    double angletan;
+
+    int frame;
+
     Uint32 startTime;
     int jumpTime;
 
@@ -70,6 +91,7 @@ private:
     SDL_Rect srcRect, destRect, collider;
 
     condition status;
+    Input inputType;
     bool onGround;
 };
 #endif // GAMEOBJECT_H_INCLUDED

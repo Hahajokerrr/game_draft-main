@@ -59,35 +59,55 @@ void Game::handleEvents()
     {
         isRunning = false;
     }
-    else if( event.type == SDL_KEYDOWN && event.key.repeat == 0 )
+    else if( event.type == SDL_KEYDOWN && event.key.repeat == 0)
         {
             switch( event.key.keysym.sym )
             {
-                /*
-                case SDLK_RIGHT: player->xvel += player->xspeed; break;
-                case SDLK_LEFT: player->xvel -= player->xspeed; break;
-                case SDLK_UP: player->yvel -= player->yspeed; break;
-                case SDLK_DOWN: player->yvel += player->yspeed; break;
-                */
-                case SDLK_RIGHT: player->RunRight(); break;
-                case SDLK_LEFT: player->RunLeft(); break;
+                //if(player->onGround == true)
+                {
+                case SDLK_RIGHT:
+                    {
+                        player->inputType.right = 1;
+                        player->inputType.left = 0;
+                        break;
+                    }
+                case SDLK_LEFT:
+                    {
+                        player->inputType.left = 1;
+                        player->inputType.right = 0;
+                        break;
+                    }
 
-                case SDLK_SPACE: player->PrepareJump(); break;
+
+                case SDLK_SPACE:
+                    //if(player->status != jumping)
+                    {
+                        player->PrepareJump();
+                        break;
+                    }
+                }
             }
         }
-    else if( event.type == SDL_KEYUP && event.key.repeat == 0 )
+    else if( event.type == SDL_KEYUP )  //&& event.key.repeat == 0)
     {
         switch( event.key.keysym.sym )
             {
-                /*
-                case SDLK_RIGHT: player->xvel -= player->xspeed; break;
-                case SDLK_LEFT: player->xvel += player->xspeed; break;
-                case SDLK_UP: player->yvel += player->yspeed; break;
-                case SDLK_DOWN: player->yvel -= player->yspeed; break;
-                */
-                case SDLK_RIGHT: player->StopRunRight(); break;
-                case SDLK_LEFT: player->StopRunLeft(); break;
-                case SDLK_SPACE: player->Jump(); break;
+                case SDLK_RIGHT:
+                    {
+                        player->inputType.right = 2;
+                        break;
+                    }
+                case SDLK_LEFT:
+                    {
+                        player->inputType.left = 2;
+                        break;
+                    }
+                case SDLK_SPACE:
+                    if(player->status != jumping && player->status != charging)
+                    {
+                        player->Jump();
+                        break;
+                    }
             }
     }
 }

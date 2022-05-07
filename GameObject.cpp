@@ -21,26 +21,6 @@ bool GameObject::checkCollision2( SDL_Rect a, SDL_Rect b )
     topB = b.y;
     bottomB = b.y + b.h;
 
-    /*if( bottomA <= topB )
-    {
-        return false;
-    }
-
-    if( topA >= bottomB )
-    {
-        return false;
-    }
-
-    if( rightA <= leftB )
-    {
-        return false;
-    }
-
-    if( leftA >= rightB )
-    {
-        return false;
-    }*/
-
     if( bottomA <= topB || topA >= bottomB || rightA <= leftB || leftA >= rightB ) return false;
     return true;
 }
@@ -56,11 +36,22 @@ GameObject::GameObject(const char* texturesheet, int x, int y)
     xvel = 0;
     yvel = 0;
 
+    angle = 0;
+    angletan = 0;
+
     startTime = 0;
     jumpTime = 0;
 
+    frame = 0;
+
     status = standing;
     onGround = true;
+
+    inputType.left = 0;
+    inputType.right = 0;
+    inputType.space = 0;
+    inputType.jumpleft = 2;
+    inputType.jumpright = 2;
 
     srcRect.h = KING_HEIGHT;
     srcRect.w = KING_WIDTH;
@@ -78,43 +69,106 @@ GameObject::GameObject(const char* texturesheet, int x, int y)
     collider.y = ypos;
 }
 
-bool GameObject::Collide(SDL_Rect &x, SDL_Rect Tile[][25], int Mapping[][25])
+void GameObject::CollideVertical(SDL_Rect &col, SDL_Rect Tile[][25], int Mapping[][25])
+{
+
+    for(int row = 0; row < 50; row++)
+        {
+            for(int column = 0; column < 25; column++)
+            {
+                if( Mapping[row][column] != 3 && checkCollision2(col, Tile[row][column]) )
+                {
+                    if(yvel > 0)
+                    {
+                        ypos = Tile[row][column].y - KING_HEIGHT;
+                        yvel = 0;
+                        onGround = true;
+                        status = standing;
+                    }
+                    else if(yvel < 0)
+                    {
+                        ypos = Tile[row][column].y + KING_HEIGHT;
+                        yvel = 0;
+                    }
+                    col.y = ypos;
+                }
+            }
+        }
+}
+void GameObject::CollideHorizontal(SDL_Rect &col, SDL_Rect Tile[][25], int Mapping[][25])
 {
     for(int row = 0; row < 50; row++)
-    {
-        for(int column = 0; column < 25; column++)
         {
-            if( Mapping[row][column] != 3 && checkCollision2(x, Tile[row][column]) ) return true;
+            for(int column = 0; column < 25; column++)
+            {
+                if( Mapping[row][column] != 3 && checkCollision2(col, Tile[row][column]) )
+                {
+                    if(xvel > 0)
+                    {
+                        if(onGround == true)
+                        {
+                            xpos = Tile[row][column].x - KING_WIDTH;
+                            xvel = 0;
+                        }
+                        else if(onGround == false)
+                        {
+                            xpos = Tile[row][column].x - KING_WIDTH;
+                            xvel = -xvel;
+                            if(xvel > -1) xvel = -1;
+                        }
+                    }
+                    else if(xvel < 0)
+                    {
+                        if(onGround == true)
+                        {
+                            xpos = Tile[row][column].x + TILE_WIDTH;
+                            xvel = 0;
+                        }
+                        else if(onGround == false)
+                        {
+                            xpos = Tile[row][column].x + TILE_WIDTH;
+                            xvel = -xvel;
+                            if(xvel < 1) xvel = 1;
+                        }
+                    }
+                    col.x = xpos;
+                }
+            }
         }
-    }
-    return false;
 }
-
 
 
 void GameObject::RunLeft()
 {
     status = running;
     xvel -= xspeed;
+    if(xvel < -maxxspeed) xvel = -maxxspeed;
 }
 
 void GameObject::RunRight()
 {
     status = running;
     xvel += xspeed;
+    if(xvel > maxxspeed) xvel = maxxspeed;
 }
 
 void GameObject::PrepareJump()
 {
     startTime = SDL_GetTicks();
+    status = charging;
+
 }
 
 void GameObject::Jump()
 {
     jumpTime = SDL_GetTicks() - startTime;
+    status = jumping;
     yvel = -(jumpTime * 0.02);
     if(yvel > -10) yvel = -10;
-    if(yvel < -25) yvel = -25;
+    if(yvel < -20) yvel = -20;
+
+    onGround = false;
+
     startTime = 0;
     jumpTime = 0;
 }
@@ -131,94 +185,31 @@ void GameObject::StopRunLeft()
     status = standing;
 }
 
+
 void GameObject::Update(SDL_Rect Tile[][25], int Mapping[][25])
 {
+    if(onGround == true )
+    {
+        if(inputType.right == 1) RunRight();
+        if(inputType.left == 1) RunLeft();
+        if(inputType.right == 2) StopRunRight();
+        if(inputType.left == 2) StopRunLeft();
+    }
+
     yvel += gravity;
     if(yvel > MAX_FALL_SPEED) yvel = MAX_FALL_SPEED;
-    if(status == running || status == standing)
-    {
-        xpos += xvel;
-        collider.x = xpos;
-
-        /*if( ( xpos < 0 ) || ( xpos + KING_WIDTH > LEVEL_WIDTH ) || Collide(collider, Tile, Mapping) )
-        {
-            xpos -= xvel;
-            collider.x = xpos;
-        }*/
-
-        for(int row = 0; row < 50; row++)
-        {
-            for(int column = 0; column < 25; column++)
-            {
-                if( Mapping[row][column] != 3 && checkCollision2(collider, Tile[row][column]) )
-                {
-                    if(xvel > 0)
-                    {
-                        xpos = Tile[row][column].x - KING_WIDTH;
-                        xvel = 0;
-                    }
-                    else if(xvel < 0)
-                    {
-                        xpos = Tile[row][column].x + TILE_WIDTH;
-                        xvel = 0;
-                    }
-                    collider.x = xpos;
-                }
-            }
-        }
-
-        ypos += yvel;
-        collider.y = ypos;
-
-        for(int row = 0; row < 50; row++)
-        {
-            for(int column = 0; column < 25; column++)
-            {
-                if( Mapping[row][column] != 3 && checkCollision2(collider, Tile[row][column]) )
-                {
-                    if(yvel > 0)
-                    {
-                        ypos = Tile[row][column].y - KING_HEIGHT;
-                        yvel = 0;
-                        onGround = true;
-                    }
-                    else if(yvel < 0)
-                    {
-                        ypos = Tile[row][column].y + KING_HEIGHT;
-                        yvel = 0;
-                    }
-                    collider.y = ypos;
-                }
-            }
-        }
-
-        /*if( ( ypos < 0 ) || ( ypos + KING_HEIGHT > LEVEL_HEIGHT ) || Collide(collider, Tile, Mapping) )
-        {
-            ypos -= yvel;
-            collider.y = ypos;
-        }*/
-
-        Camera.y = ( ypos + KING_HEIGHT/2) - SCREEN_HEIGHT / 2;
-        if( Camera.y < 0 )
-        {
-            Camera.y = 0;
-        }
-        if( Camera.y > LEVEL_HEIGHT - Camera.h )
-        {
-            Camera.y = LEVEL_HEIGHT - Camera.h;
-        }
-    }
-    destRect.x = xpos;
-    destRect.y = ypos - Camera.y;
-}
 
 
-/*void GameObject::Update(SDL_Rect Tile[][25], int Mapping[][25])
-{
-    //yvel += gravity;
-    if(yvel >= MAX_FALL_SPEED) yvel = MAX_FALL_SPEED;
-    CheckMap(Tile, Mapping);
-    destRect.x = xpos;
+    ypos += yvel;
+    collider.y = ypos;
+
+    CollideVertical(collider, Tile, Mapping);
+
+    xpos += xvel;
+    collider.x = xpos;
+
+    CollideHorizontal(collider, Tile, Mapping);
+
     Camera.y = ( ypos + KING_HEIGHT/2) - SCREEN_HEIGHT / 2;
     if( Camera.y < 0 )
     {
@@ -228,82 +219,13 @@ void GameObject::Update(SDL_Rect Tile[][25], int Mapping[][25])
     {
         Camera.y = LEVEL_HEIGHT - Camera.h;
     }
+    destRect.x = xpos;
     destRect.y = ypos - Camera.y;
+
+    frame++;
+    if(frame%5 == 0) cout << status << endl;
 }
-*/
-void GameObject::CheckMap(SDL_Rect Tile[][25], int Mapping[][25])
-{
-    /*int x1 = 0;
-    int x2 = 0;
 
-    int y1 = 0;
-    int y2 = 0;
-
-    x1 = (xpos + xvel)/TILE_WIDTH;
-    x2 = (xpos + xvel + KING_WIDTH - 1)/TILE_WIDTH;
-
-    y1 = ypos/TILE_HEIGHT;
-    y2 = (ypos + KING_HEIGHT -1)/TILE_HEIGHT;
-
-    if(x1 >= 0 && x2 <= 24 && y1 >= 0 && y2 <= 49)
-    {
-        if(xvel > 0)
-        {
-            if(Mapping[y1][x2] != 3 && Mapping[y2][x2] !=3)
-            {
-                xpos = x2*TILE_WIDTH;
-                xpos -= (KING_WIDTH +1);
-                xvel = 0;
-            }
-        }
-        else if(xvel < 0)
-        {
-            if(Mapping[y1][x1] != 3 && Mapping[y2][x1] !=3)
-            {
-                xpos = (x1 + 1)*TILE_WIDTH;
-                xvel = 0;
-            }
-        }
-    }
-
-    x1 = (xpos)/TILE_WIDTH;
-    x2 = (xpos + KING_WIDTH)/TILE_WIDTH;
-
-    y1 = (ypos + yvel)/TILE_HEIGHT;
-    y2 = (ypos + yvel + KING_HEIGHT -1)/TILE_HEIGHT;
-
-    if(x1 >= 0 && x2 <= 24 && y1 >= 0 && y2 <= 49)
-    {
-        if(yvel > 0)
-        {
-            if(Mapping[y2][x1] != 3 && Mapping[y2][x2] !=3)
-            {
-                ypos = y2*TILE_HEIGHT;
-                ypos -= (KING_HEIGHT);
-                yvel = 0;
-                onGround = true;
-            }
-        }
-        else if(yvel < 0 )
-        {
-            if(Mapping[y1][x1] != 3 && Mapping[y1][x2] !=3)
-            {
-                ypos = (y1 + 1)*TILE_HEIGHT;
-                yvel = 0;
-            }
-        }
-    }
-
-    xpos += xvel;
-    ypos += yvel;
-    //if (xpos < 0) xpos = 0;
-   // else if(xpos + KING_WIDTH > SCREEN_WIDTH) xpos = SCREEN_WIDTH - KING_WIDTH;
-   // if (ypos < 0) ypos = 0;
-   // else if(ypos + KING_HEIGHT > LEVEL_HEIGHT) ypos = LEVEL_HEIGHT - KING_HEIGHT;
-   */
-
-
-}
 
 void GameObject::Render()
 {
