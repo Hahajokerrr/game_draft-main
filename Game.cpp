@@ -47,7 +47,7 @@ void Game::init(const char* title, int xpos, int ypos, int width, int height, bo
     }
 
     background = TextureManager::LoadTexture("image/sky.png");
-    player = new GameObject("image/king_right_2.png", 64 , LEVEL_HEIGHT - 800);
+    player = new GameObject(64 , LEVEL_HEIGHT - 800);
     mapper = new Map();
 }
 
@@ -77,7 +77,11 @@ void Game::handleEvents()
                         player->inputType.right = 0;
                         break;
                     }
-
+                case SDLK_UP:
+                    {
+                        player->inputType.up = 1;
+                        break;
+                    }
 
                 case SDLK_SPACE:
                     //if(player->status != jumping)
@@ -102,11 +106,29 @@ void Game::handleEvents()
                         player->inputType.left = 2;
                         break;
                     }
-                case SDLK_SPACE:
-                    if(player->status != jumping && player->status != charging)
+                case SDLK_UP:
                     {
-                        player->Jump();
+                        player->inputType.up = 2;
                         break;
+                    }
+                case SDLK_SPACE:
+                    //if(player->status != jumping && player->status != charging)
+                    if(player->onGround == true)
+                    {
+                        switch(player->inputType.jump)
+                        {
+                            case 0:
+                            player->Jump();
+                            break;
+
+                            case 1:
+                            player->JumpRight();
+                            break;
+
+                            case 2:
+                            player->JumpLeft();
+                            break;
+                        }
                     }
             }
     }

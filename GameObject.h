@@ -9,21 +9,22 @@
 
 using namespace std;
 
-enum condition { standing, running, charging, jumping, falling, };
+enum condition { standing, running, charging, jumping };
 typedef struct Input
 {
     int left;
     int right;
-    int space;
-    int jumpleft;
-    int jumpright;
+    int up;
+    int jump;
 };
+
+
 
 
 class GameObject
 {
 public:
-    GameObject(const char* texturesheet, int x, int y);
+    GameObject(int x, int y);
     ~GameObject();
 
     friend void Game::handleEvents();
@@ -34,15 +35,19 @@ public:
 
     void RunLeft();
     void RunRight();
-    void RunUp();
-    void RunDown();
+
     void PrepareJump();
     void Jump();
+    void JumpLeft();
+    void JumpRight();
+
+
     void StopRunRight();
     void StopRunLeft();
     void StopRunUp();
     void StopRunDown();
 
+    void SetClips();
     void Render();
     void ObjectClose();
 
@@ -60,7 +65,7 @@ public:
     static const int xspeed = 1;
     static const int yspeed = 1;
 
-    static const int maxxspeed = 8;
+    static const int maxxspeed = 6;
     static const int maxyspeed = 8;
 
 
@@ -68,8 +73,6 @@ public:
     static const int KING_HEIGHT = 32;
 
     SDL_Rect Camera = {0,0,SCREEN_WIDTH,SCREEN_HEIGHT};
-
-
 
 private:
 
@@ -79,16 +82,17 @@ private:
     double xvel;
     double yvel;
 
-    double angle;
-    double angletan;
-
     int frame;
 
     Uint32 startTime;
     int jumpTime;
 
-    SDL_Texture* objTexture = NULL;
+    SDL_Texture* objTextureRight = NULL;
+    SDL_Texture* objTextureLeft = NULL;
     SDL_Rect srcRect, destRect, collider;
+
+    SDL_Rect RunningRight[5];
+    SDL_Rect RunningLeft[5];
 
     condition status;
     Input inputType;

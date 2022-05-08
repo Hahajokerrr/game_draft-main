@@ -25,33 +25,83 @@ bool GameObject::checkCollision2( SDL_Rect a, SDL_Rect b )
     return true;
 }
 
-
-
-GameObject::GameObject(const char* texturesheet, int x, int y)
+void GameObject::SetClips()
 {
-    objTexture = TextureManager::LoadTexture(texturesheet);
+    RunningRight[0].x = 3;
+    RunningRight[0].y = 9;
+    RunningRight[0].w = 32;
+    RunningRight[0].h = 32;
+
+    RunningRight[1].x = 58;
+    RunningRight[1].y = 9;
+    RunningRight[1].w = 40;
+    RunningRight[1].h = 32;
+
+    RunningRight[2].x = 118;
+    RunningRight[2].y = 9;
+    RunningRight[2].w = 32;
+    RunningRight[2].h = 32;
+
+    RunningRight[3].x = 176;
+    RunningRight[3].y = 9;
+    RunningRight[3].w = 37;
+    RunningRight[3].h = 32;
+
+    RunningRight[4].x = 118;
+    RunningRight[4].y = 9;
+    RunningRight[4].w = 32;
+    RunningRight[4].h = 32;
+
+    RunningLeft[0].x = 190;
+    RunningLeft[0].y = 9;
+    RunningLeft[0].w = 32;
+    RunningLeft[0].h = 32;
+
+    RunningLeft[1].x = 126;
+    RunningLeft[1].y = 9;
+    RunningLeft[1].w = 37;
+    RunningLeft[1].h = 32;
+
+    RunningLeft[2].x = 74;
+    RunningLeft[2].y = 9;
+    RunningLeft[2].w = 30;
+    RunningLeft[2].h = 32;
+
+    RunningLeft[3].x = 10;
+    RunningLeft[3].y = 9;
+    RunningLeft[3].w = 35;
+    RunningLeft[3].h = 32;
+
+    RunningLeft[4].x = 74;
+    RunningLeft[4].y = 9;
+    RunningLeft[4].w = 30;
+    RunningLeft[4].h = 32;
+
+}
+
+GameObject::GameObject(int x, int y)
+{
+    objTextureRight = TextureManager::LoadTexture("image/king_right_2.png");
+    objTextureLeft = TextureManager::LoadTexture("image/king_left_2.png");
     xpos = x;
     ypos = y;
 
     xvel = 0;
     yvel = 0;
 
-    angle = 0;
-    angletan = 0;
-
     startTime = 0;
     jumpTime = 0;
 
     frame = 0;
+    SetClips();
 
     status = standing;
     onGround = true;
 
-    inputType.left = 0;
-    inputType.right = 0;
-    inputType.space = 0;
-    inputType.jumpleft = 2;
-    inputType.jumpright = 2;
+    inputType.left = 3;
+    inputType.right = 3;
+    inputType.up = 0;
+    inputType.jump = 0;
 
     srcRect.h = KING_HEIGHT;
     srcRect.w = KING_WIDTH;
@@ -83,7 +133,7 @@ void GameObject::CollideVertical(SDL_Rect &col, SDL_Rect Tile[][25], int Mapping
                         ypos = Tile[row][column].y - KING_HEIGHT;
                         yvel = 0;
                         onGround = true;
-                        status = standing;
+                        //status = standing;
                     }
                     else if(yvel < 0)
                     {
@@ -141,22 +191,26 @@ void GameObject::CollideHorizontal(SDL_Rect &col, SDL_Rect Tile[][25], int Mappi
 void GameObject::RunLeft()
 {
     status = running;
-    xvel -= xspeed;
-    if(xvel < -maxxspeed) xvel = -maxxspeed;
+    //xvel -= xspeed;
+    //xvel -= 0.2;
+    //if(xvel < -maxxspeed) xvel = -maxxspeed;
+    xvel =  - maxxspeed;
 }
 
 void GameObject::RunRight()
 {
     status = running;
-    xvel += xspeed;
-    if(xvel > maxxspeed) xvel = maxxspeed;
+    //xvel += xspeed;
+    //xvel += 0.2;
+    //if(xvel > maxxspeed) xvel = maxxspeed;
+    xvel = maxxspeed;
 }
 
 void GameObject::PrepareJump()
 {
     startTime = SDL_GetTicks();
     status = charging;
-
+    xvel = 0;
 }
 
 void GameObject::Jump()
@@ -164,6 +218,36 @@ void GameObject::Jump()
     jumpTime = SDL_GetTicks() - startTime;
     status = jumping;
     yvel = -(jumpTime * 0.02);
+    if(yvel > -10) yvel = -10;
+    if(yvel < -20) yvel = -20;
+
+    onGround = false;
+
+    startTime = 0;
+    jumpTime = 0;
+}
+
+void GameObject::JumpLeft()
+{
+    jumpTime = SDL_GetTicks() - startTime;
+    status = jumping;
+    yvel = -(jumpTime * 0.02);
+    xvel = -maxxspeed;
+    if(yvel > -10) yvel = -10;
+    if(yvel < -20) yvel = -20;
+
+    onGround = false;
+
+    startTime = 0;
+    jumpTime = 0;
+}
+
+void GameObject::JumpRight()
+{
+    jumpTime = SDL_GetTicks() - startTime;
+    status = jumping;
+    yvel = -(jumpTime * 0.02);
+    xvel = maxxspeed;
     if(yvel > -10) yvel = -10;
     if(yvel < -20) yvel = -20;
 
@@ -188,12 +272,19 @@ void GameObject::StopRunLeft()
 
 void GameObject::Update(SDL_Rect Tile[][25], int Mapping[][25])
 {
-    if(onGround == true )
+    if(onGround == true && status != charging)
     {
         if(inputType.right == 1) RunRight();
         if(inputType.left == 1) RunLeft();
         if(inputType.right == 2) StopRunRight();
         if(inputType.left == 2) StopRunLeft();
+    }
+
+    if(onGround == true && status == charging)
+    {
+        if(inputType.up == 1) inputType.jump = 0;
+        if(inputType.right == 1) inputType.jump = 1;
+        if(inputType.left == 1) inputType.jump = 2;
     }
 
     yvel += gravity;
@@ -222,18 +313,43 @@ void GameObject::Update(SDL_Rect Tile[][25], int Mapping[][25])
     destRect.x = xpos;
     destRect.y = ypos - Camera.y;
 
-    frame++;
-    if(frame%5 == 0) cout << status << endl;
+    cout << inputType.left << " " << inputType.right << endl;
 }
 
 
 void GameObject::Render()
 {
-    SDL_RenderCopy(Game::renderer, objTexture, &srcRect, &destRect);
+    SDL_Rect* currentClip;
+    //if(status == running && xvel > 0)
+    if(inputType.right > 0)
+    {
+        if(status == running)
+        {
+            frame++;
+            if(frame/15 > 4) frame = 15;
+            currentClip = &RunningRight[frame/15];
+        }
+        else currentClip = &RunningRight[0];
+        SDL_RenderCopy(Game::renderer, objTextureRight, currentClip, &destRect);
+    }
+    //else if(status == running && xvel < 0)
+    else if(inputType.left > 0)
+    {
+        if(status == running)
+        {
+            frame++;
+            if(frame/15 > 4) frame = 15;
+            currentClip = &RunningLeft[frame/15];
+        }
+        else currentClip = &RunningLeft[0];
+        SDL_RenderCopy(Game::renderer, objTextureLeft, currentClip, &destRect);
+    }
 }
 
 void GameObject::ObjectClose()
 {
-    SDL_DestroyTexture(objTexture);
-    objTexture = NULL;
+    SDL_DestroyTexture(objTextureRight);
+    SDL_DestroyTexture(objTextureLeft);
+    objTextureRight = NULL;
+    objTextureLeft = NULL;
 }
