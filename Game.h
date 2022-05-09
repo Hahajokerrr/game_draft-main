@@ -3,6 +3,7 @@
 
 #include <SDL.h>
 #include <SDL_image.h>
+#include <SDL_mixer.h>
 #include <iostream>
 
 static const int SCREEN_WIDTH = 800;
@@ -27,15 +28,21 @@ public:
     void handleEvents();
     void update();
     void render();
+    void retry();
     void clean();
 
     bool running() {return isRunning;}
+    bool winning() {return win;}
+    bool retrying() {return isRetrying;}
 
     static SDL_Renderer* renderer;
+
 
 private:
     int count = 0;
     bool isRunning;
+    bool win;
+    bool isRetrying;
     SDL_Window* window = NULL;
 
 

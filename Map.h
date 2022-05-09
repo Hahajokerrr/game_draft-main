@@ -12,6 +12,7 @@ public:
 
     void LoadMap(int arr[50][25]);
     void DrawMap(SDL_Rect Camera);
+    void DrawBabe(SDL_Rect Camera);
     void CloseMap();
     bool checkCollision( SDL_Rect a, SDL_Rect b );
 
@@ -22,9 +23,10 @@ public:
 private:
     SDL_Rect src, dest;
 
-    SDL_Texture* dirt;
-    SDL_Texture* grass;
-    SDL_Texture* stone;
+    SDL_Texture* dirt = NULL;
+    SDL_Texture* grass = NULL;
+    SDL_Texture* stone = NULL;
+
 
     int mapping[50][25];
     SDL_Rect tile[50][25];

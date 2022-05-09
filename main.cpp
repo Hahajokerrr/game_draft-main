@@ -24,19 +24,25 @@ int main(int argc, char* args[])
 
     while(game->running()==true)
     {
-        frameStart = SDL_GetTicks();
-
-        game->handleEvents();
-        game->update();
-        game->render();
-
-        frameTime = SDL_GetTicks() - frameStart;
-
-        if(frameDelay > frameTime)
+        if(game->winning()==false && game->retrying() == true)
         {
-            SDL_Delay(frameDelay - frameTime);
-        }
+            frameStart = SDL_GetTicks();
 
+            game->handleEvents();
+            game->update();
+            game->render();
+
+            frameTime = SDL_GetTicks() - frameStart;
+
+            if(frameDelay > frameTime)
+            {
+                SDL_Delay(frameDelay - frameTime);
+            }
+        }
+        else
+        {
+            game->retry();
+        }
     }
     game->clean();
 

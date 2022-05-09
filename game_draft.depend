@@ -118,29 +118,30 @@
 1650728006 d:\codeblocks\project\game_draft - copy\tile.h
 	"Game.h"
 
-1652016373 source:d:\codeblocks\project\game_draft-main\game.cpp
+1652054102 source:d:\codeblocks\project\game_draft-main\game.cpp
 	"Game.h"
 	"TextureManager.h"
 	"GameObject.h"
 	"Map.h"
 
-1652016373 d:\codeblocks\project\game_draft-main\game.h
+1652083658 d:\codeblocks\project\game_draft-main\game.h
 	<SDL.h>
 	<SDL_image.h>
+	<SDL_mixer.h>
 	<iostream>
 
 1651133596 d:\codeblocks\project\game_draft-main\texturemanager.h
 	"Game.h"
 
-1652016373 d:\codeblocks\project\game_draft-main\gameobject.h
+1652054102 d:\codeblocks\project\game_draft-main\gameobject.h
 	"Game.h"
 	<math.h>
 
-1652016373 d:\codeblocks\project\game_draft-main\map.h
+1652054102 d:\codeblocks\project\game_draft-main\map.h
 	"Game.h"
 	"GameObject.h"
 
-1652016373 source:d:\codeblocks\project\game_draft-main\gameobject.cpp
+1652054102 source:d:\codeblocks\project\game_draft-main\gameobject.cpp
 	"Game.h"
 	"GameObject.h"
 	"TextureManager.h"
@@ -149,7 +150,7 @@
 
 1651133596 d:\codeblocks\project\game_draft-main\collision.h
 
-1652016373 source:d:\codeblocks\project\game_draft-main\main.cpp
+1652054102 source:d:\codeblocks\project\game_draft-main\main.cpp
 	<iostream>
 	<string>
 	<SDL.h>
@@ -159,7 +160,7 @@
 	"Game.h"
 	"TextureManager.h"
 
-1652016373 source:d:\codeblocks\project\game_draft-main\map.cpp
+1652054102 source:d:\codeblocks\project\game_draft-main\map.cpp
 	"Map.h"
 	"TextureManager.h"
 

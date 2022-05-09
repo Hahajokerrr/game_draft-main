@@ -4,6 +4,8 @@
 #include "Collision.h"
 #include "Map"
 
+SDL_Rect babeRect2 = {300,64,22,30};
+
 bool GameObject::checkCollision2( SDL_Rect a, SDL_Rect b )
 {
     int leftA, leftB;
@@ -83,8 +85,13 @@ GameObject::GameObject(int x, int y)
 {
     objTextureRight = TextureManager::LoadTexture("image/king_right_2.png");
     objTextureLeft = TextureManager::LoadTexture("image/king_left_2.png");
+
+    High = Mix_LoadWAV( "sound/high.wav" );
+    if(High == NULL) cout << "Can't load audio";
     xpos = x;
     ypos = y;
+
+    isWin = false;
 
     xvel = 0;
     yvel = 0;
@@ -119,6 +126,30 @@ GameObject::GameObject(int x, int y)
     collider.y = ypos;
 }
 
+void GameObject::Reset()
+{
+    xpos = 64;
+    ypos = LEVEL_HEIGHT - 100;
+
+    isWin = false;
+
+    xvel = 0;
+    yvel = 0;
+
+    startTime = 0;
+    jumpTime = 0;
+
+    frame = 0;
+
+    status = standing;
+    onGround = true;
+
+    inputType.left = 3;
+    inputType.right = 3;
+    inputType.up = 0;
+    inputType.jump = 0;
+}
+
 void GameObject::CollideVertical(SDL_Rect &col, SDL_Rect Tile[][25], int Mapping[][25])
 {
 
@@ -128,6 +159,7 @@ void GameObject::CollideVertical(SDL_Rect &col, SDL_Rect Tile[][25], int Mapping
             {
                 if( Mapping[row][column] != 3 && checkCollision2(col, Tile[row][column]) )
                 {
+                    //Mix_PlayChannel( -1, High, 0 );
                     if(yvel > 0)
                     {
                         ypos = Tile[row][column].y - KING_HEIGHT;
@@ -139,6 +171,7 @@ void GameObject::CollideVertical(SDL_Rect &col, SDL_Rect Tile[][25], int Mapping
                     {
                         ypos = Tile[row][column].y + KING_HEIGHT;
                         yvel = 0;
+                        Mix_PlayChannel( -1, High, 0 );
                     }
                     col.y = ypos;
                 }
@@ -153,18 +186,21 @@ void GameObject::CollideHorizontal(SDL_Rect &col, SDL_Rect Tile[][25], int Mappi
             {
                 if( Mapping[row][column] != 3 && checkCollision2(col, Tile[row][column]) )
                 {
+                   //Mix_PlayChannel( -1, High, 0 );
                     if(xvel > 0)
                     {
                         if(onGround == true)
                         {
                             xpos = Tile[row][column].x - KING_WIDTH;
                             xvel = 0;
+                            Mix_PlayChannel( -1, High, 0 );
                         }
                         else if(onGround == false)
                         {
                             xpos = Tile[row][column].x - KING_WIDTH;
                             xvel = -xvel;
                             if(xvel > -1) xvel = -1;
+                            Mix_PlayChannel( -1, High, 0 );
                         }
                     }
                     else if(xvel < 0)
@@ -173,12 +209,14 @@ void GameObject::CollideHorizontal(SDL_Rect &col, SDL_Rect Tile[][25], int Mappi
                         {
                             xpos = Tile[row][column].x + TILE_WIDTH;
                             xvel = 0;
+                            Mix_PlayChannel( -1, High, 0 );
                         }
                         else if(onGround == false)
                         {
                             xpos = Tile[row][column].x + TILE_WIDTH;
                             xvel = -xvel;
                             if(xvel < 1) xvel = 1;
+                            Mix_PlayChannel( -1, High, 0 );
                         }
                     }
                     col.x = xpos;
@@ -313,7 +351,9 @@ void GameObject::Update(SDL_Rect Tile[][25], int Mapping[][25])
     destRect.x = xpos;
     destRect.y = ypos - Camera.y;
 
-    cout << inputType.left << " " << inputType.right << endl;
+    if(checkCollision2(collider,babeRect2) == true) isWin = true;
+
+    cout << Camera.y << " " << isWin << endl;
 }
 
 
@@ -350,6 +390,8 @@ void GameObject::ObjectClose()
 {
     SDL_DestroyTexture(objTextureRight);
     SDL_DestroyTexture(objTextureLeft);
+    Mix_FreeChunk( High );
     objTextureRight = NULL;
     objTextureLeft = NULL;
+    High = NULL;
 }

@@ -3,6 +3,7 @@
 
 #include "Game.h"
 #include <math.h>
+#include <SDL_mixer.h>
 
 #define gravity 0.8
 #define MAX_FALL_SPEED 20
@@ -28,6 +29,8 @@ public:
     ~GameObject();
 
     friend void Game::handleEvents();
+    friend void Game::update();
+    friend void Game::retry();
 
     SDL_Rect GetCollider() { return collider; }
 
@@ -46,6 +49,8 @@ public:
     void StopRunLeft();
     void StopRunUp();
     void StopRunDown();
+
+    void Reset();
 
     void SetClips();
     void Render();
@@ -91,11 +96,14 @@ private:
     SDL_Texture* objTextureLeft = NULL;
     SDL_Rect srcRect, destRect, collider;
 
+    Mix_Chunk* High = NULL;
+
     SDL_Rect RunningRight[5];
     SDL_Rect RunningLeft[5];
 
     condition status;
     Input inputType;
     bool onGround;
+    bool isWin;
 };
 #endif // GAMEOBJECT_H_INCLUDED
